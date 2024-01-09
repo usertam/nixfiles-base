@@ -32,7 +32,7 @@ jobs:
         extra_nix_config: extra-platforms = ${{matrix.system}}
     - name: Build azure.${{matrix.system}}.config.system.build.azureImage
       run: |
-        nix build .#nixosConfigurations.azure.${{matrix.system}}.config.system.build.azureImage
+        nix build -L .#nixosConfigurations.azure.${{matrix.system}}.config.system.build.azureImage
     - name: Rename output before upload
       run: |
         cp -a result/*.vhd azure.${{matrix.system}}.vhd
