@@ -35,4 +35,10 @@
       use-cgroups = true;
     };
   };
+
+  # Let nix daemon use alternative TMPDIR.
+  systemd.services.nix-daemon.environment.TMPDIR = "/nix/var/tmp";
+  systemd.tmpfiles.rules = [
+    "d /nix/var/tmp 0755 root root 1d"
+  ];
 }
