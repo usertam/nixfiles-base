@@ -22,16 +22,15 @@ with pkgs.stdenv.hostPlatform;
     fsType = "vfat";
   };
 
-  # Hack the whole damn image. Can't elegantly override this.
+  # Force override image creation.
   system.build.azureImage = lib.mkForce (import "${modulesPath}/../lib/make-disk-image.nix" {
     name = "azure-image";
     postVM = ''
-      ${pkgs.vmTools.qemu}/bin/qemu-img convert -f raw -o subformat=fixed,force_size -O vpc $diskImage $out/disk.vhd
+      ${pkgs.vmTools.qemu}/bin/qemu-img convert -f raw -O vpc $diskImage \
+        $out/azure.${pkgs.system}.vhd
       rm $diskImage
     '';
-    # configFile = ./azure-config-user.nix;
     format = "raw";
-    # Just for this line.
     partitionTableType = if (!isx86) then "efi" else "legacy";
     inherit (config.virtualisation.azureImage) diskSize contents;
     inherit config lib pkgs;
